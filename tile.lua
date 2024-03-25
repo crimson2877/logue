@@ -1,9 +1,6 @@
-function create_tile(ch, walkable, blocks_sight)
-	local tile = {
-		ch = ch,
-		walkable = walkable,
-		visible = false,
-		seen = false
-	}
+function tile(position, char)
+	local tile = {}
+	tile.position = position
+	tile.char = char
 	return tile
 end
