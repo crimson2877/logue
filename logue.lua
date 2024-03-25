@@ -6,6 +6,9 @@ dofile("map.lua")
 dofile("draw.lua")
 dofile("spawn.lua")
 
+local VISIBLE_COLOR = 1
+local SEEN_COLOR = 2
+
 local function create_player(position)
 	local new_player = init_character( 
 		position,
@@ -72,6 +75,11 @@ local function init ()
 	curses.curs_set(0)
 	curses.nl(false)
 	
+	if (curses.has_colors()) then
+		curses.start_color()
+		curses.init_pair(VISIBLE_COLOR, curses.COLOR_WHITE, curses.COLOR_BLACK)
+		curses.init_pair(SEEN_COLOR, curses.COLOR_BLUE, curses.COLOR_BLACK)
+	end
 	stdscr:clear()
 	return stdscr
 end	
@@ -83,7 +91,9 @@ local function game_loop (stdscr)
 	local characters = {}
 	while (input ~= 'q')
 	do
+		map:clear_fov()
 		handle_input(input, player, map, stdscr)
+		make_fov(player, map)
 		draw_all(stdscr, map, player, characters)
 		stdscr:refresh()
 		input = string.char(getch.get_char(io.stdin))

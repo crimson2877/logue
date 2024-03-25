@@ -10,46 +10,46 @@ function create_hall(start_room, end_room)
 	local length
 	local hall = {}
 
-	if (math.random(-1, 1) > 0) then
+	if (math.abs(center_distance.x) > math.abs(center_distance.y)) then
 		start_point = {
 			x = start_room:get_center().x + (x_dir * start_room.width / 2),
-			y = start_room.position.y + math.random(start_room.height)
+			y = start_room.position.y + 2 + math.random(start_room.height - 3)
 		}
 		hall[1] = start_point
 		hall[2] = {x = start_point.x + x_dir, y = start_point.y}
 	else
 		start_point = {                                                     
                         y = start_room:get_center().y + (y_dir * start_room.height / 2),
-                        x = start_room.position.x + math.random(start_room.width)
+                        x = start_room.position.x + 2 + math.random(start_room.width - 3)
                 }
 		hall[1] = start_point
 		hall[2] = {x = start_point.x, y = start_point.y + y_dir}
 	end
 
-	if (math.random(-1, 1) > 0) then
+	if (math.abs(center_distance.x) > math.abs(center_distance.y)) then
 		end_point = {
-			x = end_room:get_center().x + (-1 * x_dir * end_room.width / 2),
-			y = end_room.position.y + math.random(end_room.height)
+			x = end_room:get_center().x + (-1 * x_dir * (end_room.width / 2)),
+			y = end_room.position.y + math.random(3, end_room.height - 3)
 		}
 		distance = get_distance(start_point, end_point)
-		length = distance.x + distance.y
+		length = distance.x + distance.y + 2
 		hall[length] = end_point
-		hall[length - 1] = {x = end_point.x + (x_dir * -1), y = end_point.y}
+		hall[length - 1] = {x = end_point.x + (x_dir * -2), y = end_point.y}
 	else
 		end_point = {                                                     
-                        y = end_room:get_center().y + (-1 * y_dir * end_room.height / 2),
-                        x = end_room.position.x + math.random(end_room.width) 
+                        y = end_room:get_center().y + (-1 * y_dir * (end_room.height / 2)),
+                        x = end_room.position.x + math.random(3, end_room.width - 3) 
                 }
 		distance = get_distance(start_point, end_point)
-		length = distance.x + distance.y
+		length = distance.x + distance.y + 2
 		hall[length] = end_point
-		hall[length - 1] = {x = end_point.x, y = end_point.y + (y_dir * -1)}
+		hall[length - 1] = {x = end_point.x, y = end_point.y + (y_dir * -2)}
 	end
 	print("length:")
 	print(length)
 	local leftover_distance = get_distance(hall[2], hall[length - 1])
-	leftover_distance.x = leftover_distance.x + 1
-	leftover_distance.y = leftover_distance.y + 1
+	leftover_distance.x = leftover_distance.x + 2
+	leftover_distance.y = leftover_distance.y + 2
 	print "new hall"
 	local i = 3
 	repeat

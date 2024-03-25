@@ -1,6 +1,7 @@
 dofile "tile.lua"
 dofile "room.lua"
 dofile "hall.lua"
+dofile "fov.lua"
 
 function create_map()
 	local map = {
@@ -10,6 +11,13 @@ function create_map()
 		rooms = {},
 		halls = {}
 	}
+	function map:clear_fov()
+		for i,v in ipairs(self.tiles) do
+			for j,_ in ipairs(v) do
+				self.tiles[i][j].visible = false
+			end
+		end
+	end
 	function map:make_tiles()
 		for i=1,self.height do
 			self.tiles[i] = {}
@@ -29,7 +37,7 @@ function create_map()
 						start_point.y == i) or 
 						(end_point.x == j and 
 						end_point.y == i) then
-						is_door = true
+							is_door = true
 					end
 					if (v:check_inside({x = j, y = i})) then
 						is_in_hall = true
@@ -40,7 +48,7 @@ function create_map()
 				elseif (is_in_room) then
 					self.tiles[i][j] = create_tile('.', true)
 				elseif (is_in_hall) then
-					self.tiles[i][j] = create_tile(' ', true)
+					self.tiles[i][j] = create_tile('.', true)
 				else
 					self.tiles[i][j] = create_tile('#', false)
 				end
@@ -115,12 +123,30 @@ function create_map()
 		end
 	end
 
-	function get_closest_by_index(index, closest_rooms)
+	local function get_closest_by_index(index, closest_rooms)
 		for i,v in ipairs(closest_rooms) do
 			if v.index == index then
 				return v
 			end
 		end
+	end
+	
+	function map:get_tiles_between(pos1, target)
+		local tiles = {}
+		local current_pos = pos1
+		local min_dist = get_dist_magnitude(current_pos, target)
+		repeat 
+			local adjacent_coords = get_adjacent_coords(current_pos)
+			for i,v in ipairs(adjacent_coords) do
+					local dist = get_dist_magnitude(v, target)
+					if (dist < min_dist) then
+						min_dist = dist
+						current_pos = v
+					end
+			end
+			table.insert(tiles, self.tiles[current_pos.y][current_pos.x])
+		until min_dist <= 1
+		return tiles
 	end
 
 	map:generate_rooms()
