@@ -88,6 +88,14 @@ function create_map()
 		end
 	end
 
+	local function get_closest_by_index(index, closest_rooms)
+		for i,v in ipairs(closest_rooms) do
+			if v.index == index then
+				return v
+			end
+		end
+	end
+
 	function map:generate_halls()
 		local halls_per_room = {}
 		local sum = 0
@@ -123,14 +131,6 @@ function create_map()
 		end
 	end
 
-	local function get_closest_by_index(index, closest_rooms)
-		for i,v in ipairs(closest_rooms) do
-			if v.index == index then
-				return v
-			end
-		end
-	end
-	
 	function map:get_tiles_between(pos1, target)
 		local tiles = {}
 		local current_pos = pos1

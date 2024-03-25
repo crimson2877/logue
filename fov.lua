@@ -1,7 +1,7 @@
 dofile "utility.lua"
 
 function make_fov(player, map)
-	local radius = 5
+	local radius = 2
 
 	map.tiles[player.position.y][player.position.x].visible = true
 	map.tiles[player.position.y][player.position.x].seen = true
