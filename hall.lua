@@ -12,18 +12,20 @@ function hall(start_room, end_room)
 		local room_x_dir = (x_dir + 1) / 2
 		start_pos = pos(start_room.top_left.x + (room_x_dir * start_room:width()), 
 					math.random(start_room.top_left.y + 1, start_room.bot_right.y - 1))
-		end_pos = pos(end_room.top_left.x + (-1 * room_x_dir * end_room:width()), 
+		end_pos = pos(end_room.top_left.x + ((room_x_dir - 1) * -1 * end_room:width()), 
 					math.random(end_room.top_left.y + 1, end_room.bot_right.y - 1))
 		second_pos = pos(start_pos.x + x_dir, start_pos.y)
 		penult_pos = pos(end_pos.x + -1 * x_dir, end_pos.y)
+		print('x')
 	else
 		local room_y_dir = (y_dir + 1) / 2
 		start_pos = pos(math.random(start_room.top_left.x + 1, start_room.bot_right.x - 1),
-					start_room.top_left.y + (room_y_dir * start_room:height()))
+			start_room.top_left.y + (room_y_dir * start_room:height()))
 		end_pos = pos(math.random(end_room.top_left.x + 1, end_room.bot_right.x - 1),
-			end_room.top_left.y + (-1 * room_y_dir * end_room:height()))
+			end_room.top_left.y + ((room_y_dir - 1) * -1 * end_room:height()))
 		second_pos = pos(start_pos.x, start_pos.y + y_dir)
 		penult_pos = pos(end_pos.x, end_pos.y + -1 * y_dir)
+		print('y')
 	end
 
 	local hall_dist = second_pos:distance_to(penult_pos)
