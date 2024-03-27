@@ -53,10 +53,12 @@ function map()
 				local id
 				if i ~= 0 then
 					id = j + 2
-				elseif i == 1 and j == 2 then
+				elseif i == 0 and j == 1 then
 					id = 6
+				elseif j == 0 then
+					id = 1
 				else
-					id = j * 4 + 1
+					id = 5
 				end
 				sections[id] = {start_pos = pos(x,y), end_pos = pos(x+25,y+12)}
 			end
@@ -72,6 +74,7 @@ function map()
 			end
 			if i == #sections then
 				table.insert(self.halls, hall(self.rooms[i], self.rooms[1]))
+				table.insert(self.halls, hall(self.rooms[i], self.rooms[3]))
 			end
 		end
 	end	
