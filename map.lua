@@ -17,10 +17,10 @@ function map()
 				local current_pos = pos(j, i)
 				local is_in_room = false
 				local is_in_hall = false
-				for k,v in ipairs(self.rooms) do
+				for k,v in pairs(self.rooms) do
 					is_in_room = v:is_inside(current_pos) or is_in_room
 				end
-				for k,v in ipairs(self.halls) do
+				for k,v in pairs(self.halls) do
 					is_in_hall = v:is_inside(current_pos) or is_in_hall
 				end
 				if is_in_room and is_in_hall then
@@ -49,7 +49,7 @@ function map()
 			for j=0,self.width/25 - 1 do
 				local x = j * 25 + 1
 				local y = i * 12 + 1
-				table.insert(sections, {start_pos = pos(x,y), end_pos = pos(x+25,y+12)})
+				table.insert(sections, {id = pos(j + 1,i + 1), start_pos = pos(x,y), end_pos = pos(x+25,y+12)})
 			end
 		end
 		local num_of_rooms = math.random(2, #sections - 1)
@@ -58,15 +58,46 @@ function map()
 			local section = sections[section_index]
 			local upper_left = pos(math.random(section.start_pos.x + 1, section.end_pos.x - 5),
 				math.random(section.start_pos.y + 1, section.end_pos.y - 5))
-			local bot_right = pos(math.random(upper_left.x + 5, section.end_pos.x - 1),
+			local bot_right = pos(math.random(upper_left.x + 5, section.end_pos.x - 2),
 				math.random(upper_left.y + 5, section.end_pos.y - 1))
-			table.insert(self.rooms, room(upper_left, bot_right))
+			self.rooms[section.id:to_string()] = room(upper_left, bot_right, section.id)
 			table.remove(sections, section_index)
 		end
 	end	
 
 	function map:gen_halls()
-		table.insert(self.halls, hall(self.rooms[1], self.rooms[2]))
+		local hall_exists = {}
+		for k,v in pairs(self.rooms) do
+			local left = pos(v.id.x - 1, v.id.y)
+			local right = pos(v.id.x + 1, v.id.y)
+			local up = pos(v.id.x, v.id.y - 1)
+			local down = pos(v.id.x, v.id.y + 1)
+			print(k)
+			print(right:to_string())
+			print(self.rooms[right:to_string()])
+			print(hall_exists[k])
+
+			if self.rooms[left:to_string()] ~= nil and (hall_exists[k] ~= nil and hall_exists[k][left:to_string()] == nil) then
+				print("test")
+				table.insert(self.halls, hall(v, self.rooms[left:to_string()]))
+				hall_exists[left:to_string()][k] = true
+			end
+			if self.rooms[right:to_string()] ~= nil and (hall_exists[k] ~= nil and hall_exists[k][right:to_string()] == nil) then
+				print("tesdt")
+				table.insert(self.halls, hall(v, self.rooms[right:to_string()]))
+				hall_exists[right:to_string()][k] = true
+			end
+			if self.rooms[up:to_string()] ~= nil and (hall_exists[k] ~= nil and hall_exists[k][up:to_string()] == nil) then
+				print("tesdt")
+				table.insert(self.halls, hall(v, self.rooms[up:to_string()]))
+				hall_exists[up:to_string()][k] = true
+			end
+			if self.rooms[down:to_string()] ~= nil and (hall_exists[k] ~= nil and hall_exists[k][down:to_string()] == nil) then
+				print("tesdt")
+				table.insert(self.halls, hall(v, self.rooms[down:to_string()]))
+				hall_exists[down:to_string()][k] = true
+			end
+		end
 	end
 
 	map:gen_rooms()
@@ -74,10 +105,11 @@ function map()
 	map:gen_tiles()
 	return map
 end
-function room(top_left, bot_right)
+function room(top_left, bot_right, id)
 	local room = {}
 	room.top_left = top_left
 	room.bot_right = bot_right
+	room.id = id
 	function room:is_inside(pos)
 		if (pos.x > self.top_left.x and pos.x < self.bot_right.x and
 			pos.y > self.top_left.y and pos.y < self.bot_right.y) then

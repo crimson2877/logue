@@ -24,7 +24,7 @@ function hall(start_room, end_room)
 		end_pos = pos(math.random(end_room.top_left.x + 1, end_room.bot_right.x - 1),
 			end_room.top_left.y + ((room_y_dir - 1) * -1 * end_room:height()))
 		second_pos = pos(start_pos.x, start_pos.y + y_dir)
-		penult_pos = pos(end_pos.x, end_pos.y + -1 * y_dir)
+		penult_pos = pos(end_pos.x, end_pos.y + (-1 * y_dir))
 		print('y')
 	end
 

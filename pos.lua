@@ -29,5 +29,9 @@ function pos(x, y)
 			return -1
 		end
 	end
+	
+	function position:to_string()
+		return "(" .. self.x .. ", " .. self.y .. ")"
+	end
 	return position
 end
