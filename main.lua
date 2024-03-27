@@ -5,13 +5,13 @@ function love.load()
 	dofile "spawn.lua"
 
 	math.randomseed(os.time())
-	update_freq = .2
+	update_freq = .05
 	time_count = 0
-	output_height = 25
-	output_width = 50
+	repeat_time = 0
 	map = map()
+	love.window.setMode(20 + 15 * #map.tiles[1], 20 + 25 * #map.tiles)
 	player = entity(get_player_spawn(map.rooms), '@', 5, 1)
-	output_tiles = map:get_part(pos(1,1), pos(output_width, output_height))
+	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
 	output_tiles[player.pos.y][player.pos.x] = tile(player.pos, player.char)
 end
 
@@ -22,21 +22,17 @@ function love.update(dt)
 	end
 	if love.keyboard.isDown("q") then
 		love.event.quit()
-		time_count = 0
 	elseif love.keyboard.isDown("j") then
 		player:move(pos(0,1), map)
-		time_count = 0
 	elseif love.keyboard.isDown("k") then
 		player:move(pos(0,-1), map)
-		time_count = 0
 	elseif love.keyboard.isDown("h") then
 		player:move(pos(-1,0), map)
-		time_count = 0
 	elseif love.keyboard.isDown("l") then
 		player:move(pos(1,0), map)
-		time_count = 0
 	end
-	output_tiles = map:get_part(pos(1,1), pos(output_width, output_height))
+	time_count = 0
+	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
 	output_tiles[player.pos.y][player.pos.x] = tile(player.pos, player.char)
 end
 
