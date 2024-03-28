@@ -26,9 +26,14 @@ function hall(start_room, end_room)
 		penult_pos = pos(end_pos.x, end_pos.y + (-1 * y_dir))
 	end
 
+	local hall_dist_vec = second_pos:vector_to(penult_pos)
 	local hall_dist = second_pos:distance_to(penult_pos)
+
 	table.insert(hall, start_pos)
 	table.insert(hall, second_pos)
+
+	local x_dir = -1 * hall_dist_vec:x_dir()
+	local y_dir = -1 * hall_dist_vec:y_dir()
 
 	repeat
 		local last_pos = hall[#hall]
