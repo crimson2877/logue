@@ -6,7 +6,7 @@ dofile "room.lua"
 function map()
 	local map = {}
 	map.height = 25
-	map.width = 75 
+	map.width = 75
 	map.tiles = {}
 	map.rooms = {}
 	map.halls = {}
@@ -19,10 +19,10 @@ function map()
 				local is_in_room = false
 				local is_in_hall = false
 				local is_door = false
-				for k,v in pairs(self.rooms) do
+				for _,v in pairs(self.rooms) do
 					is_in_room = v:is_inside(current_pos) or is_in_room
 				end
-				for k,v in pairs(self.halls) do
+				for _,v in pairs(self.halls) do
 					is_in_hall = v:is_inside(current_pos) or is_in_hall
 					if v[1].x == current_pos.x and v[1].y == current_pos.y or
 						v[#v].x == current_pos.x and v[#v].y == current_pos.y then

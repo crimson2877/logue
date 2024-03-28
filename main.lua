@@ -4,6 +4,7 @@ function love.load()
 	dofile "pos.lua"
 	dofile "spawn.lua"
 	dofile "fov.lua"
+	dofile "input.lua"
 
 	math.randomseed(os.time())
 	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 15)
@@ -22,9 +23,11 @@ function love.load()
 	love.window.setMode(10 + 13 * #map.tiles[1], 10 + 20 * #map.tiles)
 	
 	player = entity(get_player_spawn(map.rooms), '@', 5, 1)
-	goblin = goblin(get_player_spawn(map.rooms))
 	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
 	output_tiles = player:draw(output_tiles)
+
+	entities = {}
+	table.insert(entities, goblin(get_spawn(output_tiles)))
 end
 
 function love.update(dt)
@@ -35,73 +38,27 @@ function love.update(dt)
 	end
 	output_tiles[player.pos.y][player.pos.x] = map.tiles[player.pos.y][player.pos.x]
 	output_tiles = clear_fov(player.pos, output_tiles)
-	output_tiles = goblin:draw(output_tiles)
+	for _,v in pairs(entities) do
+		output_tiles = v:draw(output_tiles)
+	end
 	if love.keyboard.isDown("q") then
 		love.event.quit()
 	elseif love.keyboard.isDown("j") then
-		if last_key ~= 'j' or (last_key == 'j' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(0,1), output_tiles)
-			if last_key ~= 'j' then
-				last_key_delay_count = 0
-			end
-			last_key = 'j'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'j', pos(0, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)	
 	elseif love.keyboard.isDown("k") then
-		if last_key ~= 'k' or (last_key == 'k' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(0,-1), output_tiles)
-			if last_key ~= 'k' then
-				last_key_delay_count = 0
-			end
-			last_key = 'k'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'k', pos(0, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	elseif love.keyboard.isDown("h") then
-		if last_key ~= 'h' or (last_key == 'h' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(-1,0), output_tiles)
-			if last_key ~= 'h' then
-				last_key_delay_count = 0
-			end
-			last_key = 'h'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'h', pos(-1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	elseif love.keyboard.isDown("l") then
-		if last_key ~= 'l' or (last_key == 'l' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(1,0), output_tiles)
-			if last_key ~= 'l' then
-				last_key_delay_count = 0
-			end
-			last_key = 'l'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'l', pos(1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	elseif love.keyboard.isDown("y") then
-		if last_key ~= 'y' or (last_key == 'y' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(-1,-1), output_tiles)
-			if last_key ~= 'y' then
-				last_key_delay_count = 0
-			end
-			last_key = 'y'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'y', pos(-1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	elseif love.keyboard.isDown("u") then
-		if last_key ~= 'u' or (last_key == 'u' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(1,-1), output_tiles)
-			if last_key ~= 'u' then
-				last_key_delay_count = 0
-			end
-			last_key = 'u'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'u', pos(1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	elseif love.keyboard.isDown("b") then
-		if last_key ~= 'b' or (last_key == 'b' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(-1,1), output_tiles)
-			if last_key ~= 'b' then
-				last_key_delay_count = 0
-			end
-			last_key = 'b'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'b', pos(-1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	elseif love.keyboard.isDown("n") then
-		if last_key ~= 'n' or (last_key == 'n' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(1,1), output_tiles)
-			if last_key ~= 'n' then
-				last_key_delay_count = 0
-			end
-			last_key = 'n'
-		end
+		last_key, last_key_delay_count = move_by_key(player, entities, map, 'n', pos(1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
 	else
 		last_key = nil
 	end
