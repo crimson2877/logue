@@ -6,7 +6,7 @@ function love.load()
 	dofile "fov.lua"
 
 	math.randomseed(os.time())
-	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 18)
+	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 15)
 
 	update_freq = .04
 	time_count = 0
@@ -14,15 +14,17 @@ function love.load()
 	last_key_delay_count = 0
 	last_key = nil
 
-	seen_color = {.5,.5,.5,1}
+	seen_color = {.3,.3,.3,1}
 	visible_color = {1,1,1,1}
 
 
 	map = map()
-	love.window.setMode(20 + 15 * #map.tiles[1], 20 + 25 * #map.tiles)
+	love.window.setMode(10 + 13 * #map.tiles[1], 10 + 20 * #map.tiles)
+	
 	player = entity(get_player_spawn(map.rooms), '@', 5, 1)
+	goblin = goblin(get_player_spawn(map.rooms))
 	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
-	output_tiles[player.pos.y][player.pos.x] = tile(player.pos, player.char)
+	output_tiles = player:draw(output_tiles)
 end
 
 function love.update(dt)
@@ -33,6 +35,7 @@ function love.update(dt)
 	end
 	output_tiles[player.pos.y][player.pos.x] = map.tiles[player.pos.y][player.pos.x]
 	output_tiles = clear_fov(player.pos, output_tiles)
+	output_tiles = goblin:draw(output_tiles)
 	if love.keyboard.isDown("q") then
 		love.event.quit()
 	elseif love.keyboard.isDown("j") then
@@ -103,7 +106,7 @@ function love.update(dt)
 		last_key = nil
 	end
 	time_count = 0
-	output_tiles[player.pos.y][player.pos.x] = tile(player.pos, player.char)
+	output_tiles = player:draw(output_tiles)
 	output_tiles = fov(player.pos, output_tiles)
 end
 
