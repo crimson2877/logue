@@ -3,6 +3,7 @@ function love.load()
 	dofile "entity.lua"
 	dofile "pos.lua"
 	dofile "spawn.lua"
+	dofile "fov.lua"
 
 	math.randomseed(os.time())
 	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 18)
@@ -12,6 +13,10 @@ function love.load()
 	last_key_delay = .3
 	last_key_delay_count = 0
 	last_key = nil
+
+	seen_color = {.5,.5,.5,1}
+	visible_color = {1,1,1,1}
+
 
 	map = map()
 	love.window.setMode(20 + 15 * #map.tiles[1], 20 + 25 * #map.tiles)
@@ -26,6 +31,8 @@ function love.update(dt)
 		time_count = time_count + dt
 		return
 	end
+	output_tiles[player.pos.y][player.pos.x] = map.tiles[player.pos.y][player.pos.x]
+	output_tiles = clear_fov(player.pos, output_tiles)
 	if love.keyboard.isDown("q") then
 		love.event.quit()
 	elseif love.keyboard.isDown("j") then
@@ -96,14 +103,20 @@ function love.update(dt)
 		last_key = nil
 	end
 	time_count = 0
-	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
 	output_tiles[player.pos.y][player.pos.x] = tile(player.pos, player.char)
+	output_tiles = fov(player.pos, output_tiles)
 end
 
 function love.draw()
 	for i,v in ipairs(output_tiles) do
 		for j,w in ipairs(v) do
-			love.graphics.print(w.char, 10 + 12 * j, 10 + 20 * i)
+			local color = {0,0,0,0}
+			if w.visible then
+				color = visible_color
+			elseif w.seen then
+				color = seen_color
+			end
+			love.graphics.print({color, w.char}, 10 + 12 * j, 10 + 20 * i)
 		end
 	end
 end
