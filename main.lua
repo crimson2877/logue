@@ -40,7 +40,7 @@ function love.update(dt)
 		love.event.quit()
 	elseif love.keyboard.isDown("j") then
 		if last_key ~= 'j' or (last_key == 'j' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(0,1), map)
+			player:move(pos(0,1), output_tiles)
 			if last_key ~= 'j' then
 				last_key_delay_count = 0
 			end
@@ -48,7 +48,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("k") then
 		if last_key ~= 'k' or (last_key == 'k' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(0,-1), map)
+			player:move(pos(0,-1), output_tiles)
 			if last_key ~= 'k' then
 				last_key_delay_count = 0
 			end
@@ -56,7 +56,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("h") then
 		if last_key ~= 'h' or (last_key == 'h' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(-1,0), map)
+			player:move(pos(-1,0), output_tiles)
 			if last_key ~= 'h' then
 				last_key_delay_count = 0
 			end
@@ -64,7 +64,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("l") then
 		if last_key ~= 'l' or (last_key == 'l' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(1,0), map)
+			player:move(pos(1,0), output_tiles)
 			if last_key ~= 'l' then
 				last_key_delay_count = 0
 			end
@@ -72,7 +72,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("y") then
 		if last_key ~= 'y' or (last_key == 'y' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(-1,-1), map)
+			player:move(pos(-1,-1), output_tiles)
 			if last_key ~= 'y' then
 				last_key_delay_count = 0
 			end
@@ -80,7 +80,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("u") then
 		if last_key ~= 'u' or (last_key == 'u' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(1,-1), map)
+			player:move(pos(1,-1), output_tiles)
 			if last_key ~= 'u' then
 				last_key_delay_count = 0
 			end
@@ -88,7 +88,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("b") then
 		if last_key ~= 'b' or (last_key == 'b' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(-1,1), map)
+			player:move(pos(-1,1), output_tiles)
 			if last_key ~= 'b' then
 				last_key_delay_count = 0
 			end
@@ -96,7 +96,7 @@ function love.update(dt)
 		end
 	elseif love.keyboard.isDown("n") then
 		if last_key ~= 'n' or (last_key == 'n' and last_key_delay_count >= last_key_delay) then
-			player:move(pos(1,1), map)
+			player:move(pos(1,1), output_tiles)
 			if last_key ~= 'n' then
 				last_key_delay_count = 0
 			end
