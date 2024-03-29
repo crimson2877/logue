@@ -1,7 +1,9 @@
-entity_id = 1
+entity_id = 0
 
 function entity(position, char, hp, dmg, hostile, name)
 	local entity = {}
+	entity_id = entity_id + 1
+	entity.id = entity_id + 1
 	entity.name = name
 	entity.pos = position
 	entity.char = char
@@ -31,8 +33,7 @@ function entity(position, char, hp, dmg, hostile, name)
 	end
 	
 	function entity:draw(tiles)
-		entity_id = entity_id + 1
-		local tile = tile(self.pos, self.char, entity_id)
+		local tile = tile(self.pos, self.char, self.id)
 		tile.walkable = false
 		tiles[self.pos.y][self.pos.x] = tile
 		return tiles
@@ -42,6 +43,7 @@ function entity(position, char, hp, dmg, hostile, name)
 		occupant.hp = occupant.hp - self.dmg	
 		if occupant.hp <= 0 then
 			occupant.alive = false
+			return occupant.name .. " dies!"
 		end
 		return occupant.name .. " hit for " .. self.dmg
 	end
@@ -72,7 +74,11 @@ function make_enemy(position, char, hp, dmg, name)
 					end
 				end
 			end
-			self.pos = pos(closest_pos.x, closest_pos.y)
+			if (tiles[closest_pos.y][closest_pos.x].occupant == nil) then
+				self.pos = pos(closest_pos.x, closest_pos.y)
+			else
+				self:attack(entities[tiles[closest_pos.y][closest_pos.x].occupant])
+			end
 		end
 	end
 	return enemy

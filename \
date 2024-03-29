@@ -29,45 +29,53 @@ function love.load()
 	table.insert(entities, player)
 	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
 	output_tiles = player:draw(output_tiles)
-	for i=1,5 do
+	for i=1,1 do
 		table.insert(entities, goblin(get_spawn(output_tiles)))
 	end
 end
 
 function love.update(dt)
-	local entity_tiles = {}
-
+	update_all = false
 	last_key_delay_count = last_key_delay_count + dt
 	if time_count <= update_freq then
 		time_count = time_count + dt
 		return
 	end
 
-	table.insert(entity_tiles, map.tiles[player.pos.y][player.pos.x])
+	output_tiles[player.pos.y][player.pos.x] = map.tiles[player.pos.y][player.pos.x]
 	output_tiles = clear_fov(player.pos, output_tiles)
 
 	if love.keyboard.isDown("q") then
 		love.event.quit()
 	elseif love.keyboard.isDown("j") then
-		last_key, last_key_delay_count, logline, update_all = move_by_key(player, entities, map, 'j', pos(0, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)	
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'j', pos(0, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)	
+		update_all = true
 	elseif love.keyboard.isDown("k") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'k', pos(0, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'k', pos(0, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	elseif love.keyboard.isDown("h") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'h', pos(-1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'h', pos(-1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	elseif love.keyboard.isDown("l") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'l', pos(1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'l', pos(1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	elseif love.keyboard.isDown("y") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'y', pos(-1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'y', pos(-1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	elseif love.keyboard.isDown("u") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'u', pos(1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'u', pos(1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	elseif love.keyboard.isDown("b") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'b', pos(-1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'b', pos(-1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	elseif love.keyboard.isDown("n") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'n', pos(1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		last_key, last_key_delay_count, logline = move_by_key(player, entities, map, 'n', pos(1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
+		update_all = true
 	else
 		last_key = nil
 	end
 	
+	local entity_tiles = {}
 	for _,v in ipairs(entities) do
 		table.insert(entity_tiles, map.tiles[v.pos.y][v.pos.x])
 	end
