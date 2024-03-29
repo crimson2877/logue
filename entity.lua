@@ -1,3 +1,5 @@
+entity_id = 1
+
 function entity(position, char, hp, dmg, hostile, name)
 	local entity = {}
 	entity.name = name
@@ -29,10 +31,7 @@ function entity(position, char, hp, dmg, hostile, name)
 	end
 	
 	function entity:draw(tiles)
-		local entity_id = nil
-		if self.hostile then
-			entity_id = 1
-		end
+		entity_id = entity_id + 1
 		local tile = tile(self.pos, self.char, entity_id)
 		tile.walkable = false
 		tiles[self.pos.y][self.pos.x] = tile
@@ -49,14 +48,50 @@ function entity(position, char, hp, dmg, hostile, name)
 	return entity
 end
 
+function make_enemy(position, char, hp, dmg, name)
+	local enemy = entity(
+		position,
+		char,
+		hp,
+		dmg,
+		true,
+		name)
+
+	function enemy:update(player, entities, tiles)
+		if is_visible(self.pos, tiles, player.pos) then
+			local distance = self.pos:distance_to(player.pos):magnitude()
+			local starting_pos = self.pos
+			local closest_pos = starting_pos
+			for i=-1,1 do
+				for j=-1,1 do
+					local new_pos = pos(starting_pos.x + j, starting_pos.y + i)
+					local new_dist = new_pos:distance_to(player.pos):magnitude()
+					if distance > new_dist and map.tiles[new_pos.y][new_pos.x].walkable then
+						distance = new_dist
+						closest_pos = new_pos
+					end
+				end
+			end
+			self.pos = pos(closest_pos.x, closest_pos.y)
+		end
+	end
+	return enemy
+end
+
 function goblin(position)
-	local goblin = entity(
+	local goblin = make_enemy(
 		position,
 		'g',
 		2,
 		1,
-		true,
 		"goblin")
-	print(goblin.name)
 	return goblin
+end
+
+function update_entities(player, entities, tiles)
+	for _,v in ipairs(entities) do
+		if v.name ~= player.name then
+			v:update(player, entities, tiles)
+		end
+	end
 end
