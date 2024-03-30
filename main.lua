@@ -63,7 +63,7 @@ function love.draw()
 		return
 	end
 	love.graphics.print(game_state.logline or "", 10, 10)
-	love.graphics.print(game_state.player.hp, 10, 30)
+	love.graphics.print("HP: " .. game_state.player.hp, 10, 30)
 	for i,v in ipairs(game_state.output_tiles) do
 		for j,w in ipairs(v) do
 			local color = {0,0,0,0}

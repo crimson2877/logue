@@ -1,5 +1,5 @@
 function love.keypressed(key, isrepeat)
-	if keys.move[key] ~= nil then
+	if keys.move[key] ~= nil and game_state.player.alive then
 	
 		entity_tiles = {}
 	
