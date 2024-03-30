@@ -1,8 +1,9 @@
 entity_id = 0
 
 function entity(position, char, hp, dmg, hostile, name)
-	local entity = {}
 	entity_id = entity_id + 1
+
+	local entity = {}
 	entity.id = entity_id + 1
 	entity.name = name
 	entity.pos = position
@@ -12,20 +13,16 @@ function entity(position, char, hp, dmg, hostile, name)
 	entity.alive = true
 	entity.hostile = hostile or true
 
-	function entity:move(delta_pos, entities, tiles, map)
+	function entity:move(delta_pos, game_state)
 		local final_pos = pos(self.pos.x + delta_pos.x, self.pos.y + delta_pos.y)
-		local occupant = tiles[final_pos.y][final_pos.x].occupant
+		local occupant = game_state.output_tiles[final_pos.y][final_pos.x].occupant
 		local logline = ""
 		if occupant ~= nil then
-			logline = self:attack(entities[occupant])
-			if not entities[occupant].alive then
-				entities[occupant] = nil
-				tiles[final_pos.y][final_pos.x] = map.tiles[final_pos.y][final_pos.x]
-			end
+			logline = self:attack(game_state.entities[occupant])
 		end
-		if final_pos.y < #tiles and final_pos.y > 0 and
-			final_pos.x > 0 and final_pos.x < #tiles[1] and 
-			tiles[final_pos.y][final_pos.x].walkable then
+		if final_pos.y < #game_state.output_tiles and final_pos.y > 0 and
+			final_pos.x > 0 and final_pos.x < #game_state.output_tiles[1] and 
+			game_state.output_tiles[final_pos.y][final_pos.x].walkable then
 			self.pos.x = self.pos.x + delta_pos.x
 			self.pos.y = self.pos.y + delta_pos.y
 		end
@@ -59,25 +56,25 @@ function make_enemy(position, char, hp, dmg, name)
 		true,
 		name)
 
-	function enemy:update(player, entities, tiles)
-		if is_visible(self.pos, tiles, player.pos) then
-			local distance = self.pos:distance_to(player.pos):magnitude()
+	function enemy:update(game_state)
+		if is_visible(self.pos, game_state.output_tiles, game_state.player.pos) then
+			local distance = self.pos:distance_to(game_state.player.pos):magnitude()
 			local starting_pos = self.pos
 			local closest_pos = starting_pos
 			for i=-1,1 do
 				for j=-1,1 do
 					local new_pos = pos(starting_pos.x + j, starting_pos.y + i)
-					local new_dist = new_pos:distance_to(player.pos):magnitude()
-					if distance > new_dist and map.tiles[new_pos.y][new_pos.x].walkable then
+					local new_dist = new_pos:distance_to(game_state.player.pos):magnitude()
+					if distance > new_dist and game_state.map.tiles[new_pos.y][new_pos.x].walkable then
 						distance = new_dist
 						closest_pos = new_pos
 					end
 				end
 			end
-			if (tiles[closest_pos.y][closest_pos.x].occupant == nil) then
+			if (game_state.output_tiles[closest_pos.y][closest_pos.x].occupant == nil) then
 				self.pos = pos(closest_pos.x, closest_pos.y)
 			else
-				self:attack(entities[tiles[closest_pos.y][closest_pos.x].occupant])
+				self:attack(game_state.entities[game_state.output_tiles[closest_pos.y][closest_pos.x].occupant])
 			end
 		end
 	end
@@ -94,10 +91,10 @@ function goblin(position)
 	return goblin
 end
 
-function update_entities(player, entities, tiles)
-	for _,v in ipairs(entities) do
-		if v.name ~= player.name then
-			v:update(player, entities, tiles)
+function update_entities(game_state)
+	for _,v in ipairs(game_state.entities) do
+		if v.name ~= game_state.player.name and v.alive then
+			v:update(game_state)
 		end
 	end
 end

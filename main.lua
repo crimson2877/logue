@@ -1,4 +1,4 @@
-function love.load()
+function love.load(arg)
 	dofile "map.lua"
 	dofile "entity.lua"
 	dofile "pos.lua"
@@ -9,91 +9,55 @@ function love.load()
 	math.randomseed(os.time())
 	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 15)
 
-	update_freq = .04
-	time_count = 0
-	last_key_delay = .3
-	last_key_delay_count = 0
-	last_key = nil
-	entities = {}
-	update_all = false
+
+	game_state = {}
+	game_state.entities = {}
+
+	keys = {
+		move = {
+			['j'] = pos(0, 1),
+			['k'] = pos(0, -1),
+			['h'] = pos(-1, 0),
+			['l'] = pos(1, 0),
+			['y'] = pos(-1, -1),
+			['u'] = pos(1, -1),
+			['b'] = pos(-1, 1),
+			['n'] = pos(1, 1),
+			['.'] = pos(0,0)
+		},
+		meta = {
+			['q'] = love.event.quit
+		}
+	}
 
 	seen_color = {.3,.3,.3,1}
 	visible_color = {1,1,1,1}
 
-	logline = "Welcome to Logue!"
+	game_state.logline = "Welcome to Logue!"
 
-	map = map()
-	love.window.setMode(10 + 13 * #map.tiles[1], 40 + 20 * #map.tiles)
+	game_state.map = map()
+	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 40 + 20 * #game_state.map.tiles)
 	
-	player = entity(get_player_spawn(map.rooms), '@', 5, 1, "player")
-	table.insert(entities, player)
-	output_tiles = map:get_part(pos(1,1), pos(#map.tiles[1], #map.tiles))
-	output_tiles = player:draw(output_tiles)
+	game_state.player = entity(get_player_spawn(game_state.map.rooms), '@', 5, 1, "player")
+	table.insert(game_state.entities, player)
+
+	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
+	game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
+
 	for i=1,5 do
-		table.insert(entities, goblin(get_spawn(output_tiles)))
+		table.insert(game_state.entities, goblin(get_spawn(game_state.output_tiles)))
 	end
-end
+	for _,v in ipairs(game_state.entities) do
+        	game_state.output_tiles = v:draw(game_state.output_tiles)
+        end
+                   
+        game_state.output_tiles = fov(game_state.player.pos, game_state.output_tiles)
 
-function love.update(dt)
-	local entity_tiles = {}
-
-	last_key_delay_count = last_key_delay_count + dt
-	if time_count <= update_freq then
-		time_count = time_count + dt
-		return
-	end
-
-	table.insert(entity_tiles, map.tiles[player.pos.y][player.pos.x])
-	output_tiles = clear_fov(player.pos, output_tiles)
-
-	if love.keyboard.isDown("q") then
-		love.event.quit()
-	elseif love.keyboard.isDown("j") then
-		last_key, last_key_delay_count, logline, update_all = move_by_key(player, entities, map, 'j', pos(0, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)	
-	elseif love.keyboard.isDown("k") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'k', pos(0, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	elseif love.keyboard.isDown("h") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'h', pos(-1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	elseif love.keyboard.isDown("l") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'l', pos(1, 0), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	elseif love.keyboard.isDown("y") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'y', pos(-1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	elseif love.keyboard.isDown("u") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'u', pos(1, -1), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	elseif love.keyboard.isDown("b") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'b', pos(-1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	elseif love.keyboard.isDown("n") then
-		last_key, last_key_delay_count, logline, update_all  = move_by_key(player, entities, map, 'n', pos(1, 1), last_key, last_key_delay, last_key_delay_count, output_tiles)
-	else
-		last_key = nil
-	end
-	
-	for _,v in ipairs(entities) do
-		table.insert(entity_tiles, map.tiles[v.pos.y][v.pos.x])
-	end
-
-	if update_all then
-		update_entities(player, entities, output_tiles)
-		update_all = false
-	end
-
-	for _,v in ipairs(entity_tiles) do
-		output_tiles[v.position.y][v.position.x] = v
-	end
-
-	for i,v in ipairs(entities) do
-		output_tiles = v:draw(output_tiles)
-	end
-
-	output_tiles = player:draw(output_tiles)
-	output_tiles = fov(player.pos, output_tiles)
-
-	time_count = 0
 end
 
 function love.draw()
-	love.graphics.print(logline, 10, 10)
-	for i,v in ipairs(output_tiles) do
+	love.graphics.print(game_state.logline or "", 10, 10)
+	for i,v in ipairs(game_state.output_tiles) do
 		for j,w in ipairs(v) do
 			local color = {0,0,0,0}
 			if w.visible then
