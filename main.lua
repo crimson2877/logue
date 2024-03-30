@@ -58,6 +58,10 @@ function love.load(arg)
 end
 
 function love.draw()
+	if not game_state.player.alive then
+		love.graphics.print("Game Over!\nYou Died")
+		return
+	end
 	love.graphics.print(game_state.logline or "", 10, 10)
 	love.graphics.print(game_state.player.hp, 10, 30)
 	for i,v in ipairs(game_state.output_tiles) do
