@@ -1,10 +1,8 @@
-entity_id = 0
-
 function entity(position, char, hp, dmg, hostile, name)
 	entity_id = entity_id + 1
 
 	local entity = {}
-	entity.id = entity_id + 1
+	entity.id = entity_id
 	entity.name = name
 	entity.pos = position
 	entity.char = char
@@ -37,6 +35,9 @@ function entity(position, char, hp, dmg, hostile, name)
 	end
 	
 	function entity:attack(occupant)
+		if occupant.id == self.id then
+			return
+		end
 		occupant.hp = occupant.hp - self.dmg	
 		if occupant.hp <= 0 then
 			occupant.alive = false
@@ -92,7 +93,7 @@ function goblin(position)
 end
 
 function update_entities(game_state)
-	for _,v in ipairs(game_state.entities) do
+	for _,v in pairs(game_state.entities) do
 		if v.name ~= game_state.player.name and v.alive then
 			v:update(game_state)
 		end

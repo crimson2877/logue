@@ -8,7 +8,7 @@ function love.load(arg)
 
 	math.randomseed(os.time())
 	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 15)
-
+	love.keyboard.setKeyRepeat(true)
 
 	game_state = {}
 	game_state.entities = {}
@@ -34,12 +34,13 @@ function love.load(arg)
 	visible_color = {1,1,1,1}
 
 	game_state.logline = "Welcome to Logue!"
+	entity_id = 0
 
 	game_state.map = map()
 	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 40 + 20 * #game_state.map.tiles)
 	
-	game_state.player = entity(get_player_spawn(game_state.map.rooms), '@', 5, 1, "player")
-	table.insert(game_state.entities, player)
+	game_state.player = entity(get_player_spawn(game_state.map.rooms), '@', 5, 1, false, "player")
+	table.insert(game_state.entities, game_state.player)
 
 	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
 	game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
@@ -47,6 +48,7 @@ function love.load(arg)
 	for i=1,5 do
 		table.insert(game_state.entities, goblin(get_spawn(game_state.output_tiles)))
 	end
+
 	for _,v in ipairs(game_state.entities) do
         	game_state.output_tiles = v:draw(game_state.output_tiles)
         end
@@ -57,6 +59,7 @@ end
 
 function love.draw()
 	love.graphics.print(game_state.logline or "", 10, 10)
+	love.graphics.print(game_state.player.hp, 10, 30)
 	for i,v in ipairs(game_state.output_tiles) do
 		for j,w in ipairs(v) do
 			local color = {0,0,0,0}
