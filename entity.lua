@@ -17,14 +17,15 @@ function entity(position, char, hp, dmg, hostile, name)
 		local logline = ""
 		if target.occupant ~= nil then
 			logline = self:attack(game_state.entities[target.occupant])
-		elseif target.door ~= nil then
-			game_state.map.doors[target.door].open = true
 		end
 		if final_pos.y < #game_state.output_tiles and final_pos.y > 0 and
 			final_pos.x > 0 and final_pos.x < #game_state.output_tiles[1] and 
 			game_state.output_tiles[final_pos.y][final_pos.x].walkable then
 			self.pos.x = self.pos.x + delta_pos.x
 			self.pos.y = self.pos.y + delta_pos.y
+		end
+		if target.door ~= nil then
+			game_state.map.doors[target.door].open = true
 		end
 		return logline
 	end

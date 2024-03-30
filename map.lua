@@ -21,8 +21,6 @@ function map()
 				local current_pos = pos(j, i)
 				local is_in_room = false
 				local is_in_hall = false
-				local is_closed_door = false
-				local is_open_door = false
 
 				for _,v in pairs(self.rooms) do
 					is_in_room = v:is_inside(current_pos) or is_in_room
@@ -101,7 +99,9 @@ function map()
 				tile.walkable = true
 				tile.char = '/'
 			end
-			game_state.output_tiles[v.pos.y][v.pos.x] = tile 
+			if not (v.pos.y == game_state.player.pos.y and v.pos.x == game_state.player.pos.x) then
+				game_state.output_tiles[v.pos.y][v.pos.x] = tile 
+			end
 		end
 	end
 
@@ -110,6 +110,7 @@ function map()
 		self.stair = pos(math.random(room.top_left.x + 1, room.bot_right.x - 1), 
 			math.random(room.top_left.y + 1, room.bot_right.y - 1))
 	end
+
 	map:gen_rooms()
 	map:gen_stair()
 	map:gen_tiles()

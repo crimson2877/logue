@@ -5,3 +5,4 @@ Next features:
 - More enemies
 - Level up
 - Move with modifier key
+- Resting
