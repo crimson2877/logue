@@ -9,14 +9,16 @@ function entity(position, char, hp, dmg, hostile, name)
 	entity.hp = hp
 	entity.dmg = dmg
 	entity.alive = true
-	entity.hostile = hostile or true
+	entity.hostile = hostile
 
 	function entity:move(delta_pos, game_state)
 		local final_pos = pos(self.pos.x + delta_pos.x, self.pos.y + delta_pos.y)
-		local occupant = game_state.output_tiles[final_pos.y][final_pos.x].occupant
+		local target = game_state.output_tiles[final_pos.y][final_pos.x]
 		local logline = ""
-		if occupant ~= nil then
-			logline = self:attack(game_state.entities[occupant])
+		if target.occupant ~= nil then
+			logline = self:attack(game_state.entities[target.occupant])
+		elseif target.door ~= nil then
+			game_state.map.doors[target.door].open = true
 		end
 		if final_pos.y < #game_state.output_tiles and final_pos.y > 0 and
 			final_pos.x > 0 and final_pos.x < #game_state.output_tiles[1] and 

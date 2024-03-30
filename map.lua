@@ -2,6 +2,7 @@ dofile "tile.lua"
 dofile "pos.lua"
 dofile "hall.lua"
 dofile "room.lua"
+dofile "door.lua"
 
 function map()
 	local map = {}
@@ -10,6 +11,8 @@ function map()
 	map.tiles = {}
 	map.rooms = {}
 	map.halls = {}
+	map.doors = {}
+	map.stair = nil
 
 	function map:gen_tiles()
 		for i=1,self.height do
@@ -18,28 +21,28 @@ function map()
 				local current_pos = pos(j, i)
 				local is_in_room = false
 				local is_in_hall = false
-				local is_door = false
+				local is_closed_door = false
+				local is_open_door = false
+
 				for _,v in pairs(self.rooms) do
 					is_in_room = v:is_inside(current_pos) or is_in_room
 				end
 				for _,v in pairs(self.halls) do
 					is_in_hall = v:is_inside(current_pos) or is_in_hall
-					if v[1].x == current_pos.x and v[1].y == current_pos.y or
-						v[#v].x == current_pos.x and v[#v].y == current_pos.y then
-						is_door = true
-					end
 				end
-				if is_door then
-					map.tiles[i][j] = tile(current_pos, '/')
-					map.tiles[i][j].walkable = true
-				elseif is_in_room or is_in_hall then
-					map.tiles[i][j] = tile(current_pos, '.')
-					map.tiles[i][j].walkable = true
+
+				if is_in_room or is_in_hall then
+					self.tiles[i][j] = tile(current_pos, '.')
+					self.tiles[i][j].walkable = true
 				else
-					map.tiles[i][j] = tile(current_pos, '#')
+					self.tiles[i][j] = tile(current_pos, '#')
 				end
 			end
 		end
+		local stair_tile = tile(self.stair, '>')
+		stair_tile.stair = true
+		stair_tile.walkable = true
+		self.tiles[self.stair.y][self.stair.x] = stair_tile
 	end
 
 	function map:get_part(start_pos, end_pos)
@@ -68,6 +71,7 @@ function map()
 				sections[id] = {start_pos = pos(x,y), end_pos = pos(x+25,y+12)}
 			end
 		end
+
 		for i,section in ipairs(sections) do
 			local upper_left = pos(math.random(section.start_pos.x + 2, section.end_pos.x - 5),
 				math.random(section.start_pos.y + 2, section.end_pos.y - 5))
@@ -82,9 +86,32 @@ function map()
 				table.insert(self.halls, hall(self.rooms[i], self.rooms[3]))
 			end
 		end
+
+		for i,v in ipairs(self.halls) do
+			table.insert(self.doors, door(v[1]))
+			table.insert(self.doors, door(v[#v]))
+		end
 	end	
 
+	function map:draw_doors(game_state)
+		for i,v in ipairs(self.doors) do
+			local tile = tile(v.pos, '+')
+			tile.door = i
+			if v.open then
+				tile.walkable = true
+				tile.char = '/'
+			end
+			game_state.output_tiles[v.pos.y][v.pos.x] = tile 
+		end
+	end
+
+	function map:gen_stair()
+		local room = self.rooms[math.random(1, #self.rooms)]
+		self.stair = pos(math.random(room.top_left.x + 1, room.bot_right.x - 1), 
+			math.random(room.top_left.y + 1, room.bot_right.y - 1))
+	end
 	map:gen_rooms()
+	map:gen_stair()
 	map:gen_tiles()
 	return map
 end

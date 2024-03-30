@@ -12,7 +12,10 @@ function love.keypressed(key, isrepeat)
         	end	
 
 		game_state.output_tiles = clear_fov(game_state.player.pos, game_state.output_tiles)
+
 		move_by_key(game_state, key, keys.move[key])
+
+		game_state.map:draw_doors(game_state)
 	        game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
 
 		update_entities(game_state)

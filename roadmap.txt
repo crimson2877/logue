@@ -1,6 +1,4 @@
 Next features:
-- Doors
-- Stairs
 - Inventory
 - Items
 - Pick up items

@@ -39,10 +39,13 @@ function love.load(arg)
 	game_state.map = map()
 	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 40 + 20 * #game_state.map.tiles)
 	
+
 	game_state.player = entity(get_player_spawn(game_state.map.rooms), '@', 5, 1, false, "player")
 	table.insert(game_state.entities, game_state.player)
 
 	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
+	game_state.map:draw_doors(game_state)
+
 	game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
 
 	for i=1,5 do
