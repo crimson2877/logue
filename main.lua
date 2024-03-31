@@ -5,6 +5,8 @@ function love.load(arg)
 	dofile "spawn.lua"
 	dofile "fov.lua"
 	dofile "input.lua"
+	dofile "item.lua"
+	dofile "player.lua"
 
 	math.randomseed(os.time())
 	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 15)
@@ -12,6 +14,21 @@ function love.load(arg)
 
 	game_state = {}
 	game_state.entities = {}
+	game_state.items = {}
+	game_state.inv_open = false
+	seen_color = {.3,.3,.3,1}
+	visible_color = {1,1,1,1}
+
+	game_state.logline = "Welcome to Logue!"
+	entity_id = 0
+	load_item_enums()
+
+	game_state.map = map()
+	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 40 + 20 * #game_state.map.tiles)
+	
+
+	game_state.player = player(game_state)
+	table.insert(game_state.entities, game_state.player)
 
 	keys = {
 		move = {
@@ -27,24 +44,18 @@ function love.load(arg)
 		},
 		meta = {
 			['q'] = love.event.quit
+		},
+		actions = {
+			['g'] = game_state.player.pick_item_up,
+			['i'] = open_inv
 		}
 	}
 
-	seen_color = {.3,.3,.3,1}
-	visible_color = {1,1,1,1}
-
-	game_state.logline = "Welcome to Logue!"
-	entity_id = 0
-
-	game_state.map = map()
-	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 40 + 20 * #game_state.map.tiles)
-	
-
-	game_state.player = entity(get_player_spawn(game_state.map.rooms), '@', 5, 1, false, "player")
-	table.insert(game_state.entities, game_state.player)
-
 	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
 	game_state.map:draw_doors(game_state)
+
+	spawn_items(game_state)
+	draw_items(game_state)
 
 	game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
 
@@ -63,6 +74,9 @@ end
 function love.draw()
 	if not game_state.player.alive then
 		love.graphics.print("Game Over!\nYou Died")
+		return
+	elseif game_state.inv_open then
+		love.graphics.print("Inventory")
 		return
 	end
 	love.graphics.print(game_state.logline or "", 10, 10)

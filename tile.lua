@@ -3,6 +3,7 @@ function tile(position, char, occupant)
 	tile.position = position
 	tile.char = char
 	tile.occupant = occupant
+	tile.item = nil
 	tile.door = nil
 	tile.stair = false
 	tile.walkable = false

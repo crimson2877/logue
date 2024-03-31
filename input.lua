@@ -1,3 +1,5 @@
+dofile "item.lua"
+
 function love.keypressed(key, isrepeat)
 	if keys.move[key] ~= nil and game_state.player.alive then
 	
@@ -15,6 +17,7 @@ function love.keypressed(key, isrepeat)
 
 		move_by_key(game_state, key, keys.move[key])
 
+
 	        game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
 
 		update_entities(game_state)
@@ -31,9 +34,23 @@ function love.keypressed(key, isrepeat)
 			end
 	        end
 
+		draw_items(game_state)
 		game_state.map:draw_doors(game_state)
         	game_state.output_tiles = fov(game_state.player.pos, game_state.output_tiles)
 
+	elseif keys.actions[key] ~= nil then
+		local item = nil
+		local item_index = nil
+		for i,v in ipairs(game_state.items) do
+			if game_state.player.pos.x == v.pos.x and game_state.player.pos.y == v.pos.y then
+				item = v
+				item_index = i
+			end
+		end
+		if item ~= nil then
+			game_state.player.pick_item_up(game_state.player, item)
+			game_state.items[item_index] = nil
+		end
 	elseif keys.meta[key] ~= nil then
 		keys.meta[key]()
 	end
