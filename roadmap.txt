@@ -6,3 +6,7 @@ Next features:
 - Level up
 - Move with modifier key
 - Resting
+
+Bugs:
+- When you move away from enemy they don't move
+- Doors don't get set to 'seen'

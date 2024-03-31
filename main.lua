@@ -43,12 +43,13 @@ function love.load(arg)
 			['.'] = pos(0,0)
 		},
 		meta = {
-			['q'] = love.event.quit
+			['q'] = love.event.quit,
+			['i'] = open_inv
 		},
 		actions = {
 			['g'] = game_state.player.pick_item_up,
-			['i'] = open_inv
-		}
+			['a'] = game_state.player.use_item
+		},
 	}
 
 	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
@@ -73,10 +74,14 @@ end
 
 function love.draw()
 	if not game_state.player.alive then
-		love.graphics.print("Game Over!\nYou Died")
+		love.graphics.print("Game Over!\nYou Died", 10, 10)
 		return
 	elseif game_state.inv_open then
-		love.graphics.print("Inventory")
+		local inv_string = ""
+		for i,v in ipairs(game_state.player.inventory) do
+			inv_string = inv_string .. v.name .. "\n"
+		end
+		love.graphics.print("Inventory:\n" .. inv_string, 10, 10)
 		return
 	end
 	love.graphics.print(game_state.logline or "", 10, 10)

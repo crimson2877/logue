@@ -1,3 +1,5 @@
+dofile "item_effects.lua"
+
 function entity(position, char, hp, dmg, hostile, name)
 	entity_id = entity_id + 1
 
@@ -48,6 +50,7 @@ function entity(position, char, hp, dmg, hostile, name)
 		end
 		return occupant.name .. " hit for " .. self.dmg
 	end
+	entity = add_potion_funcs(entity)
 	return entity
 end
 
@@ -59,6 +62,14 @@ function make_enemy(position, char, hp, dmg, name)
 		dmg,
 		true,
 		name)
+
+	enemy.item = nil
+
+	function enemy:use_item()
+		if self.item ~= nil then
+			self.item.func(self)
+		end
+	end
 
 	function enemy:update(game_state)
 		if is_visible(self.pos, game_state.output_tiles, game_state.player.pos) then
