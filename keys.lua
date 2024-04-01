@@ -10,6 +10,16 @@ keys = {
                 ['n'] = pos(1, 1),
                 ['.'] = pos(0,0)
         },
+	shift_move = {
+		['j'] = pos(0, 1),
+                ['k'] = pos(0, -1),
+                ['h'] = pos(-1, 0),
+                ['l'] = pos(1, 0),
+                ['y'] = pos(-1, -1),
+                ['u'] = pos(1, -1),
+                ['b'] = pos(-1, 1),
+                ['n'] = pos(1, 1)
+        },
         meta = {
                 ['q'] = love.event.quit,
                 ['i'] = open_inv,
@@ -22,7 +32,8 @@ keys = {
                 ['a'] = game_state.player.use_item
         },
 	modifiers = {
-		['lshift'] = 1
+		['lshift'] = 1,
+		['rshift'] = 1
 	},
 	inv = {
 		['a'] = 1,

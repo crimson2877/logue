@@ -3,9 +3,6 @@ Next features:
 - Equip items
 - More enemies
 - Level up
-- Move with modifier key
-	- repeat / until loop
-	- until enemy is visible or item/door/stair is surround you
 - Wandering enemies
 - Macguffin
 - End Screen
