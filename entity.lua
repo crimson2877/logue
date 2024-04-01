@@ -9,6 +9,7 @@ function entity(position, char, hp, dmg, hostile, name)
 	entity.pos = position
 	entity.char = char
 	entity.hp = hp
+	entity.max_hp = hp
 	entity.dmg = dmg
 	entity.alive = true
 	entity.hostile = hostile
@@ -35,7 +36,9 @@ function entity(position, char, hp, dmg, hostile, name)
 	function entity:draw(tiles)
 		local tile = tile(self.pos, self.char, self.id)
 		tile.walkable = false
-		tiles[self.pos.y][self.pos.x] = tile
+		if (self.alive) then
+			tiles[self.pos.y][self.pos.x] = tile
+		end
 		return tiles
 	end
 	
@@ -72,7 +75,7 @@ function make_enemy(position, char, hp, dmg, name)
 	end
 
 	function enemy:update(game_state)
-		if is_visible(self.pos, game_state.output_tiles, game_state.player.pos) then
+		if is_visible(self.pos, game_state.output_tiles, game_state.player.pos) and self.alive then
 			local distance = self.pos:distance_to(game_state.player.pos):magnitude()
 			local starting_pos = self.pos
 			local closest_pos = starting_pos

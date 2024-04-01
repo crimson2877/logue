@@ -7,6 +7,16 @@ Next features:
 - Move with modifier key
 - Resting
 
+List of items:
+- Heal Potion [x]
+- Gold [ ]
+- Helmet [ ]
+- Armor [ ]
+- Boots [ ]
+- Projectile Scroll [ ]
+	- Implement generic projectile type item
+
 Bugs:
 - When you move away from enemy they don't move
-- Doors don't get set to 'seen'
+- Enemies survive death on new floors
+- Items spawn on each other

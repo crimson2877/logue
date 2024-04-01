@@ -7,6 +7,7 @@ function love.load(arg)
 	dofile "input.lua"
 	dofile "item.lua"
 	dofile "player.lua"
+	dofile "utility.lua"
 
 	math.randomseed(os.time())
 	love.graphics.setNewFont('resources/IBMPlexMono-Light.ttf', 15)
@@ -15,6 +16,7 @@ function love.load(arg)
 	game_state = {}
 	game_state.entities = {}
 	game_state.items = {}
+	game_state.floor = 1
 	game_state.inv_open = false
 	seen_color = {.3,.3,.3,1}
 	visible_color = {1,1,1,1}
@@ -29,28 +31,6 @@ function love.load(arg)
 
 	game_state.player = player(game_state)
 	table.insert(game_state.entities, game_state.player)
-
-	keys = {
-		move = {
-			['j'] = pos(0, 1),
-			['k'] = pos(0, -1),
-			['h'] = pos(-1, 0),
-			['l'] = pos(1, 0),
-			['y'] = pos(-1, -1),
-			['u'] = pos(1, -1),
-			['b'] = pos(-1, 1),
-			['n'] = pos(1, 1),
-			['.'] = pos(0,0)
-		},
-		meta = {
-			['q'] = love.event.quit,
-			['i'] = open_inv
-		},
-		actions = {
-			['g'] = game_state.player.pick_item_up,
-			['a'] = game_state.player.use_item
-		},
-	}
 
 	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
 	game_state.map:draw_doors(game_state)
@@ -69,6 +49,7 @@ function love.load(arg)
         end
                    
         game_state.output_tiles = fov(game_state.player.pos, game_state.output_tiles)
+	dofile "keys.lua"
 
 end
 
@@ -78,21 +59,29 @@ function love.draw()
 		return
 	elseif game_state.inv_open then
 		local inv_string = ""
-		for i,v in ipairs(game_state.player.inventory) do
-			inv_string = inv_string .. v.name .. "\n"
+		for i,v in pairs(game_state.player.inventory) do
+			inv_string = inv_string .. "(" .. first_index_of(keys.inv, i) .. ") " .. v.name .. "\n"
 		end
-		love.graphics.print("Inventory:\n" .. inv_string, 10, 10)
+		love.graphics.print("Inventory:\tGold: " .. game_state.player.fund .. "\n" .. inv_string, 10, 10)
 		return
 	end
 	love.graphics.print(game_state.logline or "", 10, 10)
-	love.graphics.print("HP: " .. game_state.player.hp, 10, 30)
+	love.graphics.print("HP: " .. game_state.player.hp .. "\t Floor: " .. game_state.floor, 10, 30)
 	for i,v in ipairs(game_state.output_tiles) do
 		for j,w in ipairs(v) do
 			local color = {0,0,0,0}
 			if w.visible then
-				color = visible_color
+				if w.color ~= nil then
+					color = w.color 
+				else
+					color = visible_color
+				end
 			elseif w.seen then
-				color = seen_color
+				if w.color ~= nil then
+					color = {w.color[1] * .4, w.color[2] * .4, w.color[3] * .4, 1} 
+				else
+					color = seen_color
+				end
 			end
 			love.graphics.print({color, w.char}, 10 + (12 * j), 40 + (20 * i))
 		end

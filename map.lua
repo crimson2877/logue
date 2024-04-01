@@ -95,10 +95,12 @@ function map()
 		for i,v in ipairs(self.doors) do
 			local tile = tile(v.pos, '+')
 			tile.door = i
+			tile.color = {.5, .35, 0, 1}
 			if v.open then
 				tile.walkable = true
 				tile.char = '/'
 			end
+			tile.seen = game_state.output_tiles[v.pos.y][v.pos.x].seen
 			if not (v.pos.y == game_state.player.pos.y and v.pos.x == game_state.player.pos.x) then
 				game_state.output_tiles[v.pos.y][v.pos.x] = tile 
 			end

@@ -12,14 +12,27 @@ keys = {
         },
         meta = {
                 ['q'] = love.event.quit,
-                ['i'] = open_inv
+                ['i'] = open_inv,
         },
+	shift_meta = {
+                ['.'] = next_floor
+	},
         actions = {
                 ['g'] = game_state.player.pick_item_up,
                 ['a'] = game_state.player.use_item
         },
+	modifiers = {
+		['lshift'] = 1
+	},
 	inv = {
-		
+		['a'] = 1,
+		['b'] = 2,
+		['c'] = 3,
+		['d'] = 4,
+		['e'] = 5,
+		['f'] = 6,
+		['g'] = 7,
+		['h'] = 8
 	}
 }
 

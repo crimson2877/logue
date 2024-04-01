@@ -9,5 +9,6 @@ function tile(position, char, occupant)
 	tile.walkable = false
 	tile.seen = false
 	tile.visible = false
+	tile.color = nil
 	return tile
 end
