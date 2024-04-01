@@ -52,7 +52,11 @@ function spawn_items(game_state)
 			position = pos(math.random(room.top_left.x + 1, room.bot_right.x - 1),
 				math.random(room.top_left.y + 1, room.bot_right.y - 1))
 			prev_tile = game_state.output_tiles[position.y][position.x]
-		until prev_tile.walkable and not prev_tile.item and not prev_tile.occupant
+			local prev_item = false
+			for k,v in pairs(game_state.items) do
+				prev_item = (position.x == v.pos.x and position.y == v.pos.y) or prev_item
+			end
+		until prev_tile.walkable and not prev_item and not prev_tile.occupant and not prev_tile.stair
 		local item_type = math.random(0, 1) * 4 + 1
 		if item_type == item_type_enum.potion then
 			local second_type = potion_enum.heal

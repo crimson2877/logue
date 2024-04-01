@@ -1,15 +1,21 @@
 Next features:
-- Inventory
-- Items
-- Pick up items
+- Inventory stacking
+- Equip items
 - More enemies
 - Level up
 - Move with modifier key
-- Resting
+	- repeat / until loop
+	- until enemy is visible or item/door/stair is surround you
+- Wandering enemies
+- Macguffin
+- End Screen
+- Quit Confirmation
+- Log item pickup
+- Add a few lines of logline
 
 List of items:
 - Heal Potion [x]
-- Gold [ ]
+- Gold [x]
 - Helmet [ ]
 - Armor [ ]
 - Boots [ ]
@@ -17,6 +23,4 @@ List of items:
 	- Implement generic projectile type item
 
 Bugs:
-- When you move away from enemy they don't move
-- Enemies survive death on new floors
-- Items spawn on each other
+- When you move away from enemies they don't move

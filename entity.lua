@@ -18,7 +18,7 @@ function entity(position, char, hp, dmg, hostile, name)
 		local final_pos = pos(self.pos.x + delta_pos.x, self.pos.y + delta_pos.y)
 		local target = game_state.output_tiles[final_pos.y][final_pos.x]
 		local logline = ""
-		if target.occupant ~= nil then
+		if target.occupant ~= nil and not (delta_pos.x == 0 and delta_pos.y == 0) then
 			logline = self:attack(game_state.entities[target.occupant])
 		end
 		if final_pos.y < #game_state.output_tiles and final_pos.y > 0 and
@@ -111,7 +111,7 @@ end
 
 function update_entities(game_state)
 	for _,v in pairs(game_state.entities) do
-		if v.name ~= game_state.player.name and v.alive then
+		if v.id ~= game_state.player.id and v.alive then
 			v:update(game_state)
 		end
 	end

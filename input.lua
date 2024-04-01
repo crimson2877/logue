@@ -44,7 +44,7 @@ function love.keypressed(key, isrepeat)
 					game_state.output_tiles[v.position.y][v.position.x] = v
 				end
 			end
-			for _,v in ipairs(game_state.entities) do
+			for k,v in pairs(game_state.entities) do
 				if v.alive and v.id ~= game_state.player.id then
 					game_state.output_tiles = v:draw(game_state.output_tiles)
 				end
@@ -83,15 +83,15 @@ function love.keyreleased(key, isrepeat)
 end
 
 function next_floor(game_state)
-	entity_id = 0
+	entity_id = 1
 	game_state.entities = {}
 	game_state.items = {}
 	game_state.inv_open = false
 	game_state.floor = game_state.floor + 1
 
 	game_state.map = map()
-	table.insert(game_state.entities, game_state.player)
 	game_state.player.pos = get_player_spawn(game_state.map.rooms)
+	table.insert(game_state.entities, game_state.player)
 
 	game_state.output_tiles = game_state.map:get_part(pos(1,1), pos(#game_state.map.tiles[1], #game_state.map.tiles))
 	game_state.map:draw_doors(game_state)

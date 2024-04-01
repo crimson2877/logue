@@ -37,10 +37,6 @@ function map()
 				end
 			end
 		end
-		local stair_tile = tile(self.stair, '>')
-		stair_tile.stair = true
-		stair_tile.walkable = true
-		self.tiles[self.stair.y][self.stair.x] = stair_tile
 	end
 
 	function map:get_part(start_pos, end_pos)
@@ -109,13 +105,21 @@ function map()
 
 	function map:gen_stair()
 		local room = self.rooms[math.random(1, #self.rooms)]
-		self.stair = pos(math.random(room.top_left.x + 1, room.bot_right.x - 1), 
-			math.random(room.top_left.y + 1, room.bot_right.y - 1))
+		repeat
+			self.stair = pos(math.random(room.top_left.x + 1, room.bot_right.x - 1), 
+				math.random(room.top_left.y + 1, room.bot_right.y - 1))
+			local prev_tile = self.tiles[self.stair.y][self.stair.x]
+		until prev_tile.walkable
+
+		local stair_tile = tile(self.stair, '>')
+		stair_tile.stair = true
+		stair_tile.walkable = true
+		self.tiles[self.stair.y][self.stair.x] = stair_tile
 	end
 
 	map:gen_rooms()
-	map:gen_stair()
 	map:gen_tiles()
+	map:gen_stair()
 	return map
 end
 

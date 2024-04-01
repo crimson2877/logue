@@ -44,7 +44,7 @@ function love.load(arg)
 		table.insert(game_state.entities, goblin(get_spawn(game_state.output_tiles)))
 	end
 
-	for _,v in ipairs(game_state.entities) do
+	for _,v in pairs(game_state.entities) do
         	game_state.output_tiles = v:draw(game_state.output_tiles)
         end
                    
