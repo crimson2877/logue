@@ -14,9 +14,11 @@ Next features:
 - Optional halls
 	- Make sure there's a path to the stairs
 	- Maybe rooms know which halls are attached to them?
+- Hunger
 
 List of items:
 - Heal Potion [x]
+- Rations [ ]
 - Gold [x]
 - Helmet [ ]
 - Armor [ ]
