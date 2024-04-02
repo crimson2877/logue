@@ -36,6 +36,7 @@ function entity(position, char, hp, dmg, hostile, name)
 	function entity:draw(tiles)
 		local tile = tile(self.pos, self.char, self.id)
 		tile.walkable = false
+		tile.transparent = true
 		if (self.alive) then
 			tiles[self.pos.y][self.pos.x] = tile
 		end
@@ -83,7 +84,7 @@ function make_enemy(position, char, hp, dmg, name)
 				for j=-1,1 do
 					local new_pos = pos(starting_pos.x + j, starting_pos.y + i)
 					local new_dist = new_pos:distance_to(game_state.player.pos):magnitude()
-					if distance > new_dist and game_state.map.tiles[new_pos.y][new_pos.x].walkable then
+					if distance > new_dist and game_state.output_tiles[new_pos.y][new_pos.x].walkable then
 						distance = new_dist
 						closest_pos = new_pos
 					end

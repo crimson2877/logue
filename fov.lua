@@ -44,7 +44,7 @@ function is_visible(position, tiles, target)
 				end
 			end
 		end
-		if (not tiles[closest_pos.y][closest_pos.x].walkable) and distance > 0 then
+		if (not tiles[closest_pos.y][closest_pos.x].walkable) and (not tiles[closest_pos.y][closest_pos.x].transparent) and distance > 0 then
 			return false
 		end
 	until distance == 0

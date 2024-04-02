@@ -7,6 +7,7 @@ function tile(position, char, occupant)
 	tile.door = nil
 	tile.stair = false
 	tile.walkable = false
+	tile.transparent = false
 	tile.seen = false
 	tile.visible = false
 	tile.color = nil

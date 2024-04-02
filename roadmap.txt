@@ -15,6 +15,7 @@ Next features:
 	- Make sure there's a path to the stairs
 	- Maybe rooms know which halls are attached to them?
 - Hunger
+- Enemy states (Hostile (following), Sleeping (not moving until attacked), Wandering, Running (low chance))
 
 List of items:
 - Heal Potion [x]
@@ -27,4 +28,3 @@ List of items:
 	- Implement generic projectile type item
 
 Bugs:
-- When you move away from enemies they don't move

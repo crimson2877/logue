@@ -17,9 +17,6 @@ function love.keypressed(key, isrepeat)
 					if k ~= 1 then
 						enemy_visible = game_state.output_tiles[v.pos.y][v.pos.x].visible and v.alive
 						if enemy_visible then 
-							print(v.id)
-							print(v.pos:to_string())
-							print(game_state.player.pos:to_string())
 							break
 						end
 					end
@@ -129,13 +126,13 @@ function move_by_key(game_state, key)
 			game_state.output_tiles[v.position.y][v.position.x] = v
 		end
 	end
+	game_state.map:draw_doors(game_state)
+	draw_items(game_state)
 	for k,v in pairs(game_state.entities) do
 		if v.alive and v.id ~= game_state.player.id then
 			game_state.output_tiles = v:draw(game_state.output_tiles)
 		end
 	end
 
-	draw_items(game_state)
-	game_state.map:draw_doors(game_state)
 	game_state.output_tiles = fov(game_state.player.pos, game_state.output_tiles)
 end
