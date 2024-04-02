@@ -88,5 +88,5 @@ function love.draw()
 			love.graphics.print({color, w.char}, 10 + (12 * j), 40 + (20 * i))
 		end
 	end
-	love.graphics.print("HP: " .. game_state.player.hp .. "\t Floor: " .. game_state.floor .. "\t Level: " .. game_state.player.level .. " Exp: " .. game_state.player.exp, 10, window_height - 30)
+	love.graphics.print("HP: " .. game_state.player.hp .. "\t Floor: " .. game_state.floor .. "\t Level: " .. game_state.player.level, 10, window_height - 30)
 end

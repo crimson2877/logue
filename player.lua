@@ -1,5 +1,5 @@
 function player(game_state)
-	local player = entity(get_player_spawn(game_state.map.rooms), '@', 15, 1, false, "player")
+	local player = entity(get_player_spawn(game_state.map.rooms), '@', 10, 1, false, "player")
 	player.inventory = {}
 	player.level = 1
 	player.exp = 0
@@ -28,6 +28,9 @@ function player(game_state)
 	function player:level_up()
 		self.level = self.level + 1
 		self.exp_thresh = self.exp_thresh + 100 + self.level * 50
+		player.dmg = player.dmg + 1
+		player.max_hp = player.max_hp + 2
+		player.hp = player.hp + 2
 		return self.name .. " reached level " .. self.level
 	end
 
