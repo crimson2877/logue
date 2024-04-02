@@ -19,7 +19,11 @@ function entity(position, char, hp, dmg, hostile, name)
 		local target = game_state.output_tiles[final_pos.y][final_pos.x]
 		local logline = ""
 		if target.occupant ~= nil and not (delta_pos.x == 0 and delta_pos.y == 0) then
-			logline = self:attack(game_state.entities[target.occupant])
+			if self.id == game_state.player.id then
+				logline = self:player_attack(game_state.entities[target.occupant])
+			else
+				logline = self:attack(game_state.entities[target.occupant])
+			end
 		end
 		if final_pos.y < #game_state.output_tiles and final_pos.y > 0 and
 			final_pos.x > 0 and final_pos.x < #game_state.output_tiles[1] and 
@@ -46,6 +50,9 @@ function entity(position, char, hp, dmg, hostile, name)
 	function entity:attack(occupant)
 		if occupant.id == self.id then
 			return
+		elseif occupant.id == game_state.player.id then
+			game_state.player.hp = game_state.player.hp - self.dmg
+			return game_state.player.name .. " hit for " .. self.dmg
 		end
 		occupant.hp = occupant.hp - self.dmg	
 		if occupant.hp <= 0 then
@@ -58,7 +65,7 @@ function entity(position, char, hp, dmg, hostile, name)
 	return entity
 end
 
-function make_enemy(position, char, hp, dmg, name)
+function make_enemy(position, char, hp, dmg, name, exp_val)
 	local enemy = entity(
 		position,
 		char,
@@ -68,6 +75,7 @@ function make_enemy(position, char, hp, dmg, name)
 		name)
 
 	enemy.item = nil
+	enemy.exp_val = exp_val
 
 	function enemy:use_item()
 		if self.item ~= nil then
@@ -84,7 +92,8 @@ function make_enemy(position, char, hp, dmg, name)
 				for j=-1,1 do
 					local new_pos = pos(starting_pos.x + j, starting_pos.y + i)
 					local new_dist = new_pos:distance_to(game_state.player.pos):magnitude()
-					if distance > new_dist and game_state.output_tiles[new_pos.y][new_pos.x].walkable then
+					local new_tile = game_state.output_tiles[new_pos.y][new_pos.x]
+					if distance > new_dist and (new_tile.walkable or new_tile.occupant) then
 						distance = new_dist
 						closest_pos = new_pos
 					end
@@ -93,7 +102,9 @@ function make_enemy(position, char, hp, dmg, name)
 			if (game_state.output_tiles[closest_pos.y][closest_pos.x].occupant == nil) then
 				self.pos = pos(closest_pos.x, closest_pos.y)
 			else
-				self:attack(game_state.entities[game_state.output_tiles[closest_pos.y][closest_pos.x].occupant])
+				local log = self:attack(game_state.entities[game_state.output_tiles[closest_pos.y][closest_pos.x].occupant])
+				print(log)
+				table.insert(game_state.logline, log)
 			end
 		end
 	end
@@ -106,7 +117,8 @@ function goblin(position)
 		'g',
 		2,
 		1,
-		"goblin")
+		"goblin",
+		12)
 	return goblin
 end
 

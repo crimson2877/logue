@@ -21,13 +21,14 @@ function love.load(arg)
 	seen_color = {.3,.3,.3,1}
 	visible_color = {1,1,1,1}
 
-	game_state.logline = "Welcome to Logue!"
+	game_state.logline = {"Welcome to Logue!"}
 	entity_id = 0
 	load_item_enums()
 
 	game_state.map = map()
-	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 40 + 20 * #game_state.map.tiles)
+	love.window.setMode(10 + 13 * #game_state.map.tiles[1], 70 + 20 * #game_state.map.tiles)
 	
+	window_height = 70 + 20 * #game_state.map.tiles
 
 	game_state.player = player(game_state)
 	table.insert(game_state.entities, game_state.player)
@@ -65,8 +66,9 @@ function love.draw()
 		love.graphics.print("Inventory:\tGold: " .. game_state.player.fund .. "\n" .. inv_string, 10, 10)
 		return
 	end
-	love.graphics.print(game_state.logline or "", 10, 10)
-	love.graphics.print("HP: " .. game_state.player.hp .. "\t Floor: " .. game_state.floor, 10, 30)
+	love.graphics.print(game_state.logline[#game_state.logline] or "", 10, 40)
+	love.graphics.print(game_state.logline[#game_state.logline - 1] or "", 10, 25)
+	love.graphics.print(game_state.logline[#game_state.logline - 2] or "", 10, 10)
 	for i,v in ipairs(game_state.output_tiles) do
 		for j,w in ipairs(v) do
 			local color = {0,0,0,0}
@@ -86,4 +88,5 @@ function love.draw()
 			love.graphics.print({color, w.char}, 10 + (12 * j), 40 + (20 * i))
 		end
 	end
+	love.graphics.print("HP: " .. game_state.player.hp .. "\t Floor: " .. game_state.floor .. "\t Level: " .. game_state.player.level .. " Exp: " .. game_state.player.exp, 10, window_height - 30)
 end

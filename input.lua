@@ -37,6 +37,7 @@ function love.keypressed(key, isrepeat)
 		elseif game_state.inv_open then
 			if keys.inv[key] ~= nil and game_state.player.inventory[keys.inv[key]] ~= nil then
 				game_state.player:use_item(game_state.player.inventory[keys.inv[key]])
+				table.insert(game_state.logline, "Used " .. game_state.player.inventory[keys.inv[key]].name)
 				game_state.inv_open = false
 				table.remove(game_state.player.inventory, keys.inv[key])
 			end
@@ -53,9 +54,12 @@ function love.keypressed(key, isrepeat)
 						item_index = i
 					end
 				end
-				if item ~= nil then
+				if item ~= nil and #game_state.player.inventory < 8 then
 					keys.actions[key](game_state.player, item)
+					table.insert(game_state.logline, "Picked up " .. item.name)
 					game_state.items[item_index] = nil
+				elseif #game_state.player.inventory >= 8 then
+					table.insert(game_state.logline, "Inventory full, could not get item")
 				end
 			end
 		end
@@ -114,7 +118,10 @@ function move_by_key(game_state, key)
 
 	game_state.output_tiles = clear_fov(game_state.player.pos, game_state.output_tiles)
 
-	game_state.logline = game_state.player:move(keys.move[key], game_state)
+	local log = game_state.player:move(keys.move[key], game_state)
+	if log ~= "" and log ~= nil then
+		table.insert(game_state.logline, log) 
+	end
 
 	game_state.output_tiles = game_state.player:draw(game_state.output_tiles)
 

@@ -7,8 +7,6 @@ Next features:
 - Macguffin
 - End Screen
 - Quit Confirmation
-- Log item pickup
-- Add a few lines of logline
 - 3 x 3 room grid
 - Optional rooms
 - Optional halls
@@ -16,6 +14,7 @@ Next features:
 	- Maybe rooms know which halls are attached to them?
 - Hunger
 - Enemy states (Hostile (following), Sleeping (not moving until attacked), Wandering, Running (low chance))
+- FOV includes entire room when you're in it
 
 List of items:
 - Heal Potion [x]
